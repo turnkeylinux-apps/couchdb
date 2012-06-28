@@ -12,3 +12,7 @@ cat >>$CONF<<EOF
 secret = $(mcookie)
 EOF
 
+# configure nginx
+rm /etc/nginx/sites-enabled/default
+ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
+

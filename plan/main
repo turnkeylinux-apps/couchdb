@@ -1,5 +1,7 @@
 #include <turnkey/base>
 
+nginx
+
 couchdb
 python-couchdb
 ipython
