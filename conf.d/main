@@ -1,0 +1,14 @@
+#!/bin/sh -ex
+
+ADMIN_NAME=admin
+ADMIN_PASS=turnkey
+
+# set admin password (will be hashed) and secret
+CONF=/etc/couchdb/local.ini
+sed -i "s|^;admin =.*|$ADMIN_NAME = $ADMIN_PASS|" $CONF
+cat >>$CONF<<EOF
+
+[couch_httpd_auth]
+secret = $(mcookie)
+EOF
+
