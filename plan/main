@@ -7,3 +7,8 @@ python-couchdb
 ipython
 curl
 
+python-pip      /* required for couchapp */
+python-dev      /* required for couchapp */
+libyaml-dev     /* required for couchapp */
+gcc             /* required for couchapp */
+
