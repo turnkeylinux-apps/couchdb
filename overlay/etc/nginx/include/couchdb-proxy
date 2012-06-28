@@ -1,6 +1,9 @@
 access_log /var/log/nginx/couchdb.access.log;
 error_log /var/log/nginx/couchdb.error.log;
 
+# used to redirect / to tklwebcp couchapp
+rewrite ^/$ /tklwebcp/_design/tklwebcp/index.html;
+
 location / {
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;

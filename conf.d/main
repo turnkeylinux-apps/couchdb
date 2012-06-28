@@ -4,6 +4,7 @@ ADMIN_NAME=admin
 ADMIN_PASS=turnkey
 
 SRC=/usr/local/src
+WEBCP=/opt/tklwebcp
 
 # set admin password (will be hashed) and secret
 CONF=/etc/couchdb/local.ini
@@ -31,4 +32,24 @@ pip install $SRC/couchapp/watchdog-*
 pip install $SRC/couchapp/restkit-*
 pip install $SRC/couchapp/Couchapp-*
 rm -rf $SRC/couchapp
+
+# create tklwebcp
+/etc/init.d/couchdb start
+
+mkdir -p $WEBCP/_attachments
+mv /var/www/* $WEBCP/_attachments
+rm $WEBCP/_attachments/images/filemanager.png
+rm $WEBCP/_attachments/images/phpmyadmin.png
+rm $WEBCP/_attachments/images/phppgadmin.png
+
+cd $WEBCP
+echo -n "_design/tklwebcp" > _id
+couchapp init
+couchapp push --force . http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp
+
+curl http://127.0.0.1:5984/tklwebcp/
+sleep 5 # couchdb delayed commits
+curl http://127.0.0.1:5984/tklwebcp/
+
+/etc/init.d/couchdb stop
 
