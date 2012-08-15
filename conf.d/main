@@ -53,3 +53,9 @@ curl http://127.0.0.1:5984/tklwebcp/
 
 /etc/init.d/couchdb stop
 
+# fix couchdb service so it starts when dependent services are up
+CONF=/etc/init.d/couchdb
+sed -i "s|Required-Start.*|Required-Start:    \$local_fs \$remote_fs \$network \$syslog|" $CONF
+sed -i "s|Required-Stop.*|Required-Stop:     \$local_fs \$remote_fs \$network \$syslog|" $CONF
+insserv
+

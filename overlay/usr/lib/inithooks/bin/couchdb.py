@@ -54,7 +54,7 @@ def main():
         system("/etc/init.d/couchdb restart")
     except ExecError, e:
         pass
-    
+
 
 if __name__ == "__main__":
     main()
