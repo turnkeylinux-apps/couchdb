@@ -20,18 +20,9 @@ rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
 
 # install couchapp
-pip install $SRC/couchapp/argparse-*
-pip install $SRC/couchapp/pathtools-*
-pip install $SRC/couchapp/argh-*
-pip install $SRC/couchapp/PyYAML-*
-pip install $SRC/couchapp/WebOb-*
-pip install $SRC/couchapp/nose-*
-pip install $SRC/couchapp/socketpool-*
-pip install $SRC/couchapp/http-parser-*
-pip install $SRC/couchapp/watchdog-*
-pip install $SRC/couchapp/restkit-*
-pip install $SRC/couchapp/Couchapp-*
-rm -rf $SRC/couchapp
+[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
+pip install couchapp
+unset HTTP_PROXY
 
 # create tklwebcp
 /etc/init.d/couchdb start
