@@ -6,6 +6,36 @@ ADMIN_PASS=turnkey
 SRC=/usr/local/src
 WEBCP=/opt/tklwebcp
 
+cd $SRC
+tar -xvf apache-couchdb-*.tar.gz
+cd apache-couchdb-*
+./configure
+make
+make install
+cd .. 
+
+rm -rf apache-couchdb-*
+apt-get remove -y build-essential erlang-dev erlang-manpages help2man
+
+apt-get autoremove -y
+apt-get clean
+
+useradd -d /var/lib/couchdb couchdb
+
+ln -s /usr/local/etc/couchdb/local.ini /etc/couchdb/local.ini
+ln -s /var/log/couchdb/ /usr/local/var/log/couchdb/
+
+chown -R couchdb: /usr/local/var/lib/couchdb
+chown -R couchdb: /usr/local/var/log/couchdb 
+chown -R couchdb: /usr/local/var/run/couchdb 
+chown -R couchdb: /usr/local/etc/couchdb
+
+chmod 0770 /usr/local/var/lib/couchdb/
+chmod 0770 /usr/local/var/log/couchdb/
+chmod 0770 /usr/local/var/run/couchdb/
+chmod 664 /usr/local/etc/couchdb/*.ini
+chmod 775 /usr/local/etc/couchdb/*.d
+
 # set admin password (will be hashed) and secret
 CONF=/etc/couchdb/local.ini
 sed -i "s|^;admin =.*|$ADMIN_NAME = $ADMIN_PASS|" $CONF
@@ -14,6 +44,11 @@ cat >>$CONF<<EOF
 [couch_httpd_auth]
 secret = $(mcookie)
 EOF
+
+cd /etc/init.d
+ln -s /usr/local/etc/init.d/couchdb couchdb
+/etc/init.d/couchdb start
+update-rc.d couchdb defaults
 
 # configure nginx
 rm /etc/nginx/sites-enabled/default

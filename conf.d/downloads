@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+
+dl() {
+    [ "$FAB_HTTP_PROXY" ] && PROXY="--proxy $FAB_HTTP_PROXY"
+    cd $2; curl -L -f -O $PROXY $1; cd -
+}
+
+VERSION="1.6.1"
+
+CHK_URL="https://www.apache.org/dyn/closer.cgi?path=/couchdb/source/$VERSION/apache-couchdb-$VERSION.tar.gz"
+
+curl $CHK_URL > check.tmp
+
+SEARCH_TAG='site for your download:</p>'
+PRE_URL_PAT='<p><a href="'
+POST_URL_PAT='"><strong>http'
+
+URL="$(cat check.tmp | grep -A1 "$SEARCH_TAG" | grep "$PRE_URL_PAT" | sed "s|.*$PRE_URL_PAT||;s|$POST_URL_PAT.*||")"
+
+SRC=/usr/local/src
+
+dl $URL /usr/local/src
+rm check.tmp
