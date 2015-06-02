@@ -10,7 +10,7 @@ web apps directly out of CouchDB.
 This appliance includes all the standard features in `TurnKey Core`_,
 and on top of that:
 
-- Installed CouchDB from package management system.
+- Installed CouchDB from upstream source.
 - Includes Nginx pre-configured to proxy to CouchDB, with SSL support
   out of the box.
 - Includes CouchApp, CouchDB Python bindings and iPython.
