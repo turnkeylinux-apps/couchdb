@@ -2,7 +2,6 @@
 
 nginx
 
-couchdb
 python-couchdb
 ipython
 
@@ -11,3 +10,14 @@ python-dev      /* required for couchapp */
 libyaml-dev     /* required for couchapp */
 gcc             /* required for couchapp */
 
+build-essential /* this and the rest required to build couchdb from source */
+libicu-dev
+libcurl4-openssl-dev
+libmozjs185-dev
+erlang-base-hipe
+erlang-dev
+erlang-manpages
+erlang-eunit
+erlang-nox
+sudo
+python-pygments
