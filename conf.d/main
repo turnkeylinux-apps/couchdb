@@ -22,8 +22,10 @@ apt-get clean
 
 useradd -d /var/lib/couchdb couchdb
 
-ln -s /usr/local/etc/couchdb/local.ini /etc/couchdb/local.ini
-ln -s /var/log/couchdb/ /usr/local/var/log/couchdb/
+mv /etc/couchdb/* /usr/local/etc/couchdb/
+rm -rf /etc/couchdb
+ln -s /usr/local/etc/couchdb /etc/couchdb
+ln -s /usr/local/var/log/couchdb /var/log/couchdb 
 
 chown -R couchdb: /usr/local/var/lib/couchdb
 chown -R couchdb: /usr/local/var/log/couchdb 
@@ -65,8 +67,10 @@ unset HTTP_PROXY
 mkdir -p $WEBCP/_attachments
 mv /var/www/* $WEBCP/_attachments
 rm $WEBCP/_attachments/images/filemanager.png
-rm $WEBCP/_attachments/images/phpmyadmin.png
-rm $WEBCP/_attachments/images/phppgadmin.png
+rm $WEBCP/_attachments/images/adminer.png
+# these lines can be removed once these have gone from common (-f so no error)
+rm -f $WEBCP/_attachments/images/phpmyadmin.png
+rm -f $WEBCP/_attachments/images/phppgadmin.png
 
 cd $WEBCP
 echo -n "_design/tklwebcp" > _id
