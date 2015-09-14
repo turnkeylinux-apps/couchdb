@@ -24,4 +24,4 @@ Credentials *(passwords set at first boot)*
 -  CouchDB: username **admin**
 
 .. _CouchDB: http://couchdb.apache.org/
-.. _TurnKey Core: http://www.turnkeylinux.org/core
+.. _TurnKey Core: https://www.turnkeylinux.org/core
