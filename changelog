@@ -1,8 +1,6 @@
 turnkey-couchdb-14.1 (1) turnkey; urgency=low
 
-  * Fixed SSL issue (serving ssl on 443)
-
-  * Latest Debian jessie package versions of other components.
+  * Fixed SSL issue (serving ssl on 443) [#551].
 
   * Note: Please refer to turnkey-core's changelog for changes common to all
     appliances. Here we only describe changes specific to this appliance.
