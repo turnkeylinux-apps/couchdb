@@ -14,6 +14,8 @@ and on top of that:
 - Includes Nginx pre-configured to proxy to CouchDB, with SSL support
   out of the box.
 - Includes CouchApp, CouchDB Python bindings and iPython.
+- CouchDB listening on all interfaces (convenience)
+- CouchDB `Admin Party`_ disabled and user **admin** enabled by default (security)
 - Includes TurnKey Web Control panel with links to useful references,
   served by CouchDB, built with CouchApp: /opt/tklwebcp
 
@@ -24,4 +26,5 @@ Credentials *(passwords set at first boot)*
 -  CouchDB: username **admin**
 
 .. _CouchDB: http://couchdb.apache.org/
+.. _Admin Party: http://guide.couchdb.org/draft/security.html#party
 .. _TurnKey Core: https://www.turnkeylinux.org/core
