@@ -19,5 +19,6 @@ erlang-dev
 erlang-manpages
 erlang-eunit
 erlang-nox
+erlang-reltool
 sudo
 python-pygments

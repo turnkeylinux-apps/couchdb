@@ -10,8 +10,8 @@ cd $SRC
 tar -xvf apache-couchdb-*.tar.gz
 cd apache-couchdb-*
 ./configure
-make
-make install
+make release
+cp -r rel/couchdb /usr/local/couchdb
 cd .. 
 
 rm -rf apache-couchdb-*
@@ -20,23 +20,20 @@ apt-get remove -y build-essential erlang-dev erlang-manpages help2man
 apt-get autoremove -y
 apt-get clean
 
-useradd -d /var/lib/couchdb couchdb
+useradd -d /usr/local/couchdb couchdb
 
-mv /etc/couchdb/* /usr/local/etc/couchdb/
+mv /etc/couchdb/* /usr/local/couchdb/etc
 rm -rf /etc/couchdb
-ln -s /usr/local/etc/couchdb /etc/couchdb
-ln -s /usr/local/var/log/couchdb /var/log/couchdb 
+ln -s /usr/local/couchdb/etc /etc/couchdb
+ln -s /usr/local/couchdb/var/log /var/log/couchdb 
 
-chown -R couchdb: /usr/local/var/lib/couchdb
-chown -R couchdb: /usr/local/var/log/couchdb 
-chown -R couchdb: /usr/local/var/run/couchdb 
-chown -R couchdb: /usr/local/etc/couchdb
+for i in lib var/log etc; do
+    chown -R couchdb: /usr/local/couchdb/$i
+    chmod 0770 /usr/local/couchdb/$i
+done
 
-chmod 0770 /usr/local/var/lib/couchdb/
-chmod 0770 /usr/local/var/log/couchdb/
-chmod 0770 /usr/local/var/run/couchdb/
-chmod 664 /usr/local/etc/couchdb/*.ini
-chmod 775 /usr/local/etc/couchdb/*.d
+chmod 664 /usr/local/couchdb/etc/*.ini
+chmod 775 /usr/local/couchdb/etc/*.d
 
 # set admin password (will be hashed) and secret
 CONF=/etc/couchdb/local.ini
@@ -47,8 +44,6 @@ cat >>$CONF<<EOF
 secret = $(mcookie)
 EOF
 
-cd /etc/init.d
-ln -s /usr/local/etc/init.d/couchdb couchdb
 /etc/init.d/couchdb start
 update-rc.d couchdb defaults
 
@@ -82,10 +77,4 @@ sleep 5 # couchdb delayed commits
 curl http://127.0.0.1:5984/tklwebcp/
 
 /etc/init.d/couchdb stop
-
-# fix couchdb service so it starts when dependent services are up
-CONF=/etc/init.d/couchdb
-sed -i "s|Required-Start.*|Required-Start:    \$local_fs \$remote_fs \$network \$syslog|" $CONF
-sed -i "s|Required-Stop.*|Required-Stop:     \$local_fs \$remote_fs \$network \$syslog|" $CONF
-insserv
 
