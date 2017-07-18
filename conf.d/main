@@ -44,7 +44,7 @@ cat >>$CONF<<EOF
 secret = $(mcookie)
 EOF
 
-/etc/init.d/couchdb start
+service couchdb start
 update-rc.d couchdb defaults
 
 # configure nginx
@@ -57,15 +57,12 @@ pip install couchapp
 unset HTTP_PROXY
 
 # create tklwebcp
-/etc/init.d/couchdb start
+service couchdb start
 
 mkdir -p $WEBCP/_attachments
 mv /var/www/* $WEBCP/_attachments
 rm $WEBCP/_attachments/images/filemanager.png
 rm $WEBCP/_attachments/images/adminer.png
-# these lines can be removed once these have gone from common (-f so no error)
-rm -f $WEBCP/_attachments/images/phpmyadmin.png
-rm -f $WEBCP/_attachments/images/phppgadmin.png
 
 cd $WEBCP
 echo -n "_design/tklwebcp" > _id
@@ -76,5 +73,5 @@ curl http://127.0.0.1:5984/tklwebcp/
 sleep 5 # couchdb delayed commits
 curl http://127.0.0.1:5984/tklwebcp/
 
-/etc/init.d/couchdb stop
+service couchdb stop
 
