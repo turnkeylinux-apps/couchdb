@@ -22,6 +22,7 @@ apt-get clean
 
 useradd -d /usr/local/couchdb couchdb
 
+rm -r /usr/local/couchdb/etc/default.d
 mv /etc/couchdb/* /usr/local/couchdb/etc
 rm -rf /etc/couchdb
 ln -s /usr/local/couchdb/etc /etc/couchdb

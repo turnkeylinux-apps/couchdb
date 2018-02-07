@@ -7,6 +7,8 @@ ipython
 
 python-pip      /* required for couchapp */
 python-dev      /* required for couchapp */
+python-setuptools /* required for couchapp */
+python-wheel    /* required for couchapp */
 libyaml-dev     /* required for couchapp */
 gcc             /* required for couchapp */
 
