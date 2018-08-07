@@ -1,11 +1,11 @@
 turnkey-couchdb-15.0 (1) turnkey; urgency=low
 
-  * Installed CouchDB v2.1.1 from upstream source code.
+  * Installed CouchDB v2.1.2 from upstream source code.
 
   * Note: Please refer to turnkey-core's changelog for changes common to all
     appliances. Here we only describe changes specific to this appliance.
 
- -- Stefan Davis <stefan@turnkeylinux.org>  Mon, 08 Jan 2018 22:54:58 +1100
+ -- Stefan Davis <stefan@turnkeylinux.org>  Tue, 07 Aug 2018 13:35:22 +1000
 
 turnkey-couchdb-14.2 (1) turnkey; urgency=low
 
