@@ -9,6 +9,9 @@
 # Description:       no description given
 ### END INIT INFO
 
+# bind epmd (erlang) to localhost - disable this if clustering
+export ERL_EPMD_ADDRESS=127.0.0.1
+
 export HOME=/usr/local/couchdb
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
