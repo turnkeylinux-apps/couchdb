@@ -50,8 +50,8 @@ def main():
 
     # restart couchdb if running so change takes effect
     try:
-        system("/etc/init.d/couchdb status >/dev/null 2>&1")
-        system("/etc/init.d/couchdb restart")
+        system("systemctl is-active --quiet couchdb.service")
+        system("service couchdb restart")
     except ExecError, e:
         pass
 
