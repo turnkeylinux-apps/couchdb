@@ -1,0 +1,11 @@
+Package: *
+Pin: origin apache.bintray.com
+Pin-Priority: 100
+
+Package: couchdb
+Pin: origin apache.bintray.com
+Pin-Priority: 500
+
+Package: libmozjs185-dev
+Pin: origin apache.bintray.com
+Pin-Priority: 500
