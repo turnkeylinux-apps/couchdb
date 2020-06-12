@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Set CouchDB admin password
 
 Option:
@@ -11,21 +11,21 @@ import getopt
 import hashlib
 from uuid import uuid4
 
-from executil import system, ExecError
+import subprocess
 from dialog_wrapper import Dialog
 
 def usage(s=None):
     if s:
-        print >> sys.stderr, "Error:", s
-    print >> sys.stderr, "Syntax: %s [options]" % sys.argv[0]
-    print >> sys.stderr, __doc__
+        print("Error:", s, file=sys.stderr)
+    print("Syntax: %s [options]" % sys.argv[0], file=sys.stderr)
+    print(__doc__, file=sys.stderr)
     sys.exit(1)
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h",
                                        ['help', 'pass='])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     password = ""
@@ -41,20 +41,13 @@ def main():
             "CouchDB Password",
             "Enter new password for the CouchDB 'admin' account.")
 
-    salt = str(uuid4()).replace('-', '')
-    hash = hashlib.sha1(password + salt).hexdigest()
-    hashpass = "-hashed-%s,%s" % (hash, salt)
-
-    conf = "/etc/couchdb/local.ini"
-    system("sed -i \"s|^admin =.*|admin = %s|\" %s" % (hashpass, conf))
+    conf = "/opt/couchdb/etc/local.d/10-admins.ini"
+    subprocess.run(
+            ["sed", "-i", "s|^admin =.*|admin = %s|" % password, conf])
 
     # restart couchdb if running so change takes effect
-    try:
-        system("systemctl is-active --quiet couchdb.service")
-        system("service couchdb restart")
-    except ExecError, e:
-        pass
-
+    subprocess.run(["systemctl", "is-active", "--quiet", "couchdb.service"])
+    subprocess.run(["service", "couchdb", "restart"])
 
 if __name__ == "__main__":
     main()

@@ -6,44 +6,47 @@ ADMIN_PASS=turnkey
 SRC=/usr/local/src
 WEBCP=/opt/tklwebcp
 
-cd $SRC
-tar -xvf apache-couchdb-*.tar.gz
-cd apache-couchdb-*
-./configure
-make release
-cp -r rel/couchdb /usr/local/couchdb
-cd .. 
+# service couchdb stop # doesn't work, below is required to exit
+stop_couchdb() {
+    kill $(pgrep -u couchdb beam*)
+    while [ -n "$(pgrep -u couchdb beam*)" ]; do
+        sleep 1
+    done
+    kill $(pgrep epmd)
+}
 
-rm -rf apache-couchdb-*
-apt-get remove -y build-essential erlang-dev erlang-manpages help2man
+debconf-set-selections <<EOF
+couchdb	couchdb/adminpass	password $ADMIN_PASS
+couchdb	couchdb/adminpass_again	password $ADMIN_PASS
+couchdb	couchdb/postrm_remove_databases	boolean	false
+couchdb	couchdb/have_1x_databases	note
+couchdb	couchdb/error_setting_password	error
+couchdb	couchdb/bindaddress	string	127.0.0.1
+couchdb	couchdb/cookie	string	monster
+couchdb	couchdb/adminpass_mismatch	error
+couchdb	couchdb/nodename	string	couchdb@localhost
+couchdb	couchdb/mode	select	standalone
+EOF
 
-apt-get autoremove -y
-apt-get clean
-
-useradd -d /usr/local/couchdb couchdb
-
-rm -r /usr/local/couchdb/etc/default.d
-mv /etc/couchdb/* /usr/local/couchdb/etc
-rm -rf /etc/couchdb
-ln -s /usr/local/couchdb/etc /etc/couchdb
-ln -s /usr/local/couchdb/var/log /var/log/couchdb 
-
-for i in lib var/log etc; do
-    chown -R couchdb: /usr/local/couchdb/$i
-    chmod 0770 /usr/local/couchdb/$i
-done
-
-chmod 664 /usr/local/couchdb/etc/*.ini
-chmod 775 /usr/local/couchdb/etc/*.d
+apt-get update
+apt-get install --assume-yes couchdb
 
 # set admin password (will be hashed) and secret
-CONF=/etc/couchdb/local.ini
-sed -i "s|^;admin =.*|$ADMIN_NAME = $ADMIN_PASS|" $CONF
+CONF=/opt/couchdb/etc/local.ini
+sed -i "s|^;admin =.*|$ADMIN_NAME = $ADMIN_PASS|" \
+    '/opt/couchdb/etc/local.d/10-admins.ini'
 cat >>$CONF<<EOF
 
 [couch_httpd_auth]
 secret = $(mcookie)
 EOF
+
+# raise iterations and min_iterations from the absurdly low `10`
+# to a bare minimum of `1000`
+sed -i "/^\[chttpd\]/ aiterations = 1000" $CONF
+sed -i "/^\[chttpd\]/ amin_iterations = 1000" $CONF
+sed -i "/^\[couch_httpd_auth\]/ aiterations = 1000" $CONF
+sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 
 service couchdb start
 update-rc.d couchdb defaults
@@ -67,12 +70,29 @@ rm $WEBCP/_attachments/images/adminer.png
 
 cd $WEBCP
 echo -n "_design/tklwebcp" > _id
+
+# ensure these required backend databases exist
+curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_users
+curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_replicator
+curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_global_changes
+
 couchapp init
 couchapp push --force . http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp
 
-curl http://127.0.0.1:5984/tklwebcp/
+## NOTE the following lines allow readonly access to tklwebcp by ANYONE, but write access
+##  only to users with the _admin role
+# set perms for tklwebcp, this should only remove the default `_admin` role from members
+# effectively this opens non-destructive read/write perms to the world
+curl -X PUT "http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/_security" \
+    -d '{"members":{"roles":[]},"admins":{"roles":["_admin"]}}'
+# add validation function which denies write access to the tklwebcp from anyone except for an admin
+curl -X PUT "http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/_design/readonly_validate" \
+    -d "{ \"_id\": \"_design/readonly_validate\", \
+    \"validate_doc_update\": \"$(cat /usr/local/src/validate_func.js | tr -d '\r\n\t')\"}"
+rm /usr/local/src/validate_func.js
+
+curl http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/
 sleep 5 # couchdb delayed commits
-curl http://127.0.0.1:5984/tklwebcp/
+curl http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/
 
-service couchdb stop
-
+stop_couchdb
