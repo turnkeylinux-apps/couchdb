@@ -1,10 +1,12 @@
 server {
     listen 0.0.0.0:80;
+    client_max_body_size 20M;
     include /etc/nginx/include/couchdb-proxy;
 }
 
 server {
     listen 0.0.0.0:443 ssl;
+    client_max_body_size 20M;
     include /etc/nginx/include/ssl;
     include /etc/nginx/include/couchdb-proxy;
 }
