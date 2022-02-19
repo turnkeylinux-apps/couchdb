@@ -14,7 +14,6 @@ turnkey-couchdb-17.0 (1) turnkey; urgency=low
 
  -- Zhenya Hvorostian <zhenya@turnkeylinux.org>  Sat, 19 Feb 2022 02:28:00 +0300
 
-
 turnkey-couchdb-16.1 (1) turnkey; urgency=low
 
   * Installed CouchDB v3.1.1 from upstream debian repos.
