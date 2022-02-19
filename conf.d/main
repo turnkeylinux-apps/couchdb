@@ -46,5 +46,4 @@ su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklw
 
 # configure nginx
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
-rm /etc/nginx/sites-available/tkl-default
 rm /etc/nginx/sites-enabled/tkl-default
