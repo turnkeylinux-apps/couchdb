@@ -12,7 +12,7 @@ couchdb	couchdb/adminpass_again	password $ADMIN_PASS
 couchdb	couchdb/postrm_remove_databases	boolean	false
 couchdb	couchdb/have_1x_databases	note
 couchdb	couchdb/error_setting_password	error
-couchdb	couchdb/bindaddress	string	0.0.0.0
+couchdb	couchdb/bindaddress	string	127.0.0.1
 couchdb	couchdb/cookie	string	monster
 couchdb	couchdb/adminpass_mismatch	error
 couchdb	couchdb/nodename	string	couchdb@localhost
