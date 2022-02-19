@@ -1,13 +1,29 @@
-server {
-    listen 0.0.0.0:80;
-    client_max_body_size 20M;
-    include /etc/nginx/include/couchdb-proxy;
+upstream couchdb {
+  server localhost:5984;
+}
+
+upstream fauxton {
+  server localhost:8001;
 }
 
 server {
-    listen 0.0.0.0:443 ssl;
-    client_max_body_size 20M;
-    include /etc/nginx/include/ssl;
-    include /etc/nginx/include/couchdb-proxy;
+    listen 0.0.0.0:80 default_server;
+    server_name _;
+
+    set $nodeapp_port 8000;
+    include /etc/nginx/include/nodejs-proxy;
+    include /etc/nginx/include/fauxton;
+}
+
+server {
+    listen 0.0.0.0:443 ssl default_server;
+    server_name _;
+
+    proxy_set_header X-Forwarded-Proto https;
+    include /etc/nginx/snippets/ssl.conf;
+
+    set $nodeapp_port 8000;
+    include /etc/nginx/include/nodejs-proxy;
+    include /etc/nginx/include/fauxton;
 }
 
