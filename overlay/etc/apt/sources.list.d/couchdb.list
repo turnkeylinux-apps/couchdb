@@ -1,1 +1,1 @@
-deb [signed-by=/usr/share/keyrings/couchdb.gpg] https://apache.bintray.com/couchdb-deb buster main
+deb [signed-by=/usr/share/keyrings/couchdb.gpg] https://apache.jfrog.io/artifactory/couchdb-deb bullseye main

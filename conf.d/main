@@ -3,17 +3,8 @@
 ADMIN_NAME=admin
 ADMIN_PASS=turnkey
 
+NODEUSER=node
 SRC=/usr/local/src
-WEBCP=/opt/tklwebcp
-
-# service couchdb stop # doesn't work, below is required to exit
-stop_couchdb() {
-    kill $(pgrep -u couchdb beam*)
-    while [ -n "$(pgrep -u couchdb beam*)" ]; do
-        sleep 1
-    done
-    kill $(pgrep epmd)
-}
 
 debconf-set-selections <<EOF
 couchdb	couchdb/adminpass	password $ADMIN_PASS
@@ -48,51 +39,11 @@ sed -i "/^\[chttpd\]/ amin_iterations = 1000" $CONF
 sed -i "/^\[couch_httpd_auth\]/ aiterations = 1000" $CONF
 sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 
-service couchdb start
 update-rc.d couchdb defaults
 
+su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && npm i fauxton" $NODEUSER
+su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && pm2 start ecosystem.config.js && sleep 5 && pm2 save && pm2 kill" $NODEUSER
+
 # configure nginx
-rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
-
-# install couchapp
-[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
-pip install couchapp
-unset HTTP_PROXY
-
-# create tklwebcp
-service couchdb start
-
-mkdir -p $WEBCP/_attachments
-mv /var/www/* $WEBCP/_attachments
-rm $WEBCP/_attachments/images/filemanager.png
-rm $WEBCP/_attachments/images/adminer.png
-
-cd $WEBCP
-echo -n "_design/tklwebcp" > _id
-
-# ensure these required backend databases exist
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_users
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_replicator
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_global_changes
-
-couchapp init
-couchapp push --force . http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp
-
-## NOTE the following lines allow readonly access to tklwebcp by ANYONE, but write access
-##  only to users with the _admin role
-# set perms for tklwebcp, this should only remove the default `_admin` role from members
-# effectively this opens non-destructive read/write perms to the world
-curl -X PUT "http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/_security" \
-    -d '{"members":{"roles":[]},"admins":{"roles":["_admin"]}}'
-# add validation function which denies write access to the tklwebcp from anyone except for an admin
-curl -X PUT "http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/_design/readonly_validate" \
-    -d "{ \"_id\": \"_design/readonly_validate\", \
-    \"validate_doc_update\": \"$(cat /usr/local/src/validate_func.js | tr -d '\r\n\t')\"}"
-rm /usr/local/src/validate_func.js
-
-curl http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/
-sleep 5 # couchdb delayed commits
-curl http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/tklwebcp/
-
-stop_couchdb
+rm /etc/nginx/sites-enabled/tkl-default
