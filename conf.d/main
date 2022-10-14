@@ -45,7 +45,6 @@ npm i -g pm2
 su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && npm i fauxton" $NODEUSER
 su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && pm2 start ecosystem.config.js && sleep 5 && pm2 save && pm2 kill" $NODEUSER
 
-
 # configure nginx
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
 rm /etc/nginx/sites-enabled/tkl-default
