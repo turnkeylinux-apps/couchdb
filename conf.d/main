@@ -8,7 +8,7 @@ SRC=/usr/local/src
 
 debconf-set-selections <<EOF
 couchdb	couchdb/adminpass	password $ADMIN_PASS
-couchdb	couchdb/adminpass_again	seen true
+couchdb	couchdb/adminpass_again	password $ADMIN_PASS
 couchdb	couchdb/postrm_remove_databases	boolean	false
 couchdb	couchdb/have_1x_databases	note
 couchdb	couchdb/error_setting_password	error
@@ -42,9 +42,10 @@ sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 update-rc.d couchdb defaults
 
 chmod 777 /opt/tklweb-cp
-
+npm i -g pm2
 su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && npm i fauxton" $NODEUSER
 su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && pm2 start /opt/tklweb-cp/ecosystem.config.js && sleep 5 && pm2 save && pm2 kill" $NODEUSER
+
 
 # configure nginx
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
