@@ -8,19 +8,19 @@ SRC=/usr/local/src
 
 debconf-set-selections <<EOF
 couchdb	couchdb/adminpass	password $ADMIN_PASS
-couchdb	couchdb/adminpass_again	password $ADMIN_PASS
+couchdb	couchdb/adminpass_again	seen true
 couchdb	couchdb/postrm_remove_databases	boolean	false
 couchdb	couchdb/have_1x_databases	note
 couchdb	couchdb/error_setting_password	error
 couchdb	couchdb/bindaddress	string	127.0.0.1
-couchdb	couchdb/cookie	string	monster
+couchdb	couchdb/cookie	string	cookieMonster
 couchdb	couchdb/adminpass_mismatch	error
 couchdb	couchdb/nodename	string	couchdb@localhost
 couchdb	couchdb/mode	select	standalone
 EOF
 
 apt-get update
-apt-get install --assume-yes couchdb
+DEBIAN_FRONTEND=noninteractive apt-get install --force-yes couchdb
 
 # set admin password (will be hashed) and secret
 CONF=/opt/couchdb/etc/local.ini
@@ -41,8 +41,10 @@ sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 
 update-rc.d couchdb defaults
 
+chmod 777 /opt/tklweb-cp
+
 su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && npm i fauxton" $NODEUSER
-su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && pm2 start ecosystem.config.js && sleep 5 && pm2 save && pm2 kill" $NODEUSER
+su -lc "[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY; cd /opt/tklweb-cp && pm2 start /opt/tklweb-cp/ecosystem.config.js && sleep 5 && pm2 save && pm2 kill" $NODEUSER
 
 # configure nginx
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
