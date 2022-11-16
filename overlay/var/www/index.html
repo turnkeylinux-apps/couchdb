@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TurnKey CouchDB</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/ui.tabs.css">
+        <script type="text/javascript" src="/js/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="/js/ui.core.js"></script>
+        <script type="text/javascript" src="/js/ui.tabs.js"></script>
+        <script type="text/javascript">
+            $(function() { $('#container-1 > ul').tabs({ fx: { opacity: 'toggle'} }); });
+            var host = window.location.host;
+            var href = window.location.href;
+            var a_href = '<a href="https://'+host;
+        </script>
+    </head>
+    <body>
+        <h1>TurnKey CouchDB</h1>
+        <div id="container-1">
+            <ul>
+                <li><a href="#cp"><span>Control Panel</span></a></li>
+            </ul>
+            <div id="cp">
+                <div class="fragment-content">
+                    <div></div>
+                    <div>
+                        <script type="text/javascript">
+                            document.write(a_href+':12320">')
+                        </script>
+                            <img src="/images/shell.png">
+                            <span>Web Shell</span>
+                        </a>
+                    </div>
+                    <div>
+                        <script type="text/javascript">
+                            document.write(a_href+':12321">')
+                        </script>
+                            <img src="/images/webmin.png">
+                            <span>Webmin</span>
+                        </a>
+                    </div>
+                    <div>
+                        <script type="text/javascript">
+                            document.write(a_href+'/couchdb/_utils/">')
+                        </script>
+                            <img src="/images/fauxton.png">
+                            <span>Fauxton</span>
+                        </a>
+                    </div>
+                    <div></div>
+                    <h2>Resources</h2>
+                    <ul>
+                        <li><a href="https://www.turnkeylinux.org/couchdb">TurnKey CouchDB release notes</a></li>
+                        <li><a href="https://docs.couchdb.org/en/stable/"> CouchDB Manual & Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <h2>Connecting to CouchDB</h2>
+
+            <p>By default, raw CouchDB access is via the
+            <script type="text/javascript">document.write(a_href+'/couchdb">/couchdb</a>')</script>
+            sub-directory. I.e.:</p>
+            <pre><script type="text/javascript">document.write(href+'couchdb')</script></pre>
+            <p>If you would rather access CouchDB via the naked domain (i.e. without the '/couchdb' URL
+            suffix) then log into your server via ssh and enable the alternate Nginx config we supply:</p>
+            <pre>
+rm /etc/nginx/sites-enabled/couchdb
+ln -s /etc/nginx/sites-available/couchdb-standalone /etc/nginx/sites-enabled/couchdb-standalone
+systemctl restart nginx
+            </pre>
+            <p><u>Note:</u> This page will no longer be available. To connect to Fauxton, add the '/_utils/' suffix to the domain.</p>
+        </div>
+    </body>
+</html>
