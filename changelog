@@ -13,13 +13,14 @@ turnkey-couchdb-17.0 (1) turnkey; urgency=low
     The setting is available via Fauxton UI in the config area.
     [ Zhenya Hvorostian ]
 
-  * Various tweaks and improvements to build code for v17.0, including
-    removing our custom nodejs stuff - deb now includes fauxton).
+  * Major refactoring and improvements to build code for v17.0, including
+    removing common nodejs components - upstream deb now includes Fauxton).
+    [ with Mattie Darden <mattie@turnkeylinunx.org> ]
 
   * Note: Please refer to turnkey-core's 17.0 changelog for changes common to all
     appliances. Here we only describe changes specific to this appliance.
 
- -- Jeremy Davis <jeremy@turnkeylinux.org>  Fri, 18 Nov 2022 04:06:37 +0000
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Fri, 18 Nov 2022 20:00:35 +0000
 
 turnkey-couchdb-16.1 (1) turnkey; urgency=low
 
