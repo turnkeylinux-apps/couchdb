@@ -8,10 +8,20 @@
         <script type="text/javascript" src="/js/ui.core.js"></script>
         <script type="text/javascript" src="/js/ui.tabs.js"></script>
         <script type="text/javascript">
-            $(function() { $('#container-1 > ul').tabs({ fx: { opacity: 'toggle'} }); });
-            var host = window.location.host;
-            var href = window.location.href;
-            var a_href = '<a href="https://'+host;
+            $(function() {
+                $('#container-1 > ul').tabs({ fx: { opacity: 'toggle'} });
+            });
+        </script>
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+              https = "https://"+window.location.hostname;
+              $("a[id='webshell']").attr('href', https+":12320");
+              $("a[id='webmin']").attr('href', https+":12321");
+              $("a[id='fauxton']").attr('href', https+"/couchdb/_utils/");
+              $("a[id='couchdb']").attr('href', https+"/couchdb");
+              $("pre[id='couchdb-eg']").text(https+"couchdb");
+              $("pre[id='fauxton-alt']").text(https+"/_utils/");
+            });
         </script>
     </head>
     <body>
@@ -19,56 +29,63 @@
         <div id="container-1">
             <ul>
                 <li><a href="#cp"><span>Control Panel</span></a></li>
+                <li><a href="#ref"><span>Usage and Reference</span></a></li>
             </ul>
             <div id="cp">
                 <div class="fragment-content">
-                    <div></div>
                     <div>
-                        <script type="text/javascript">
-                            document.write(a_href+':12320">');
-                        </script>
+                        <a id="webshell" href="">
                             <img src="/images/shell.png">
                             <span>Web Shell</span>
                         </a>
                     </div>
                     <div>
-                        <script type="text/javascript">
-                            document.write(a_href+':12321">');
-                        </script>
+                        <a id="webmin" href="">
                             <img src="/images/webmin.png">
                             <span>Webmin</span>
                         </a>
                     </div>
                     <div>
-                        <script type="text/javascript">
-                            document.write(a_href+'/couchdb/_utils/">');
-                        </script>
+                        <a id="fauxton" href="">
                             <img src="/images/fauxton.png">
                             <span>Fauxton</span>
                         </a>
                     </div>
+                    <div></div>
                     <div></div>
                     <h2>Resources</h2>
                     <ul>
                         <li><a href="https://www.turnkeylinux.org/couchdb">TurnKey CouchDB release notes</a></li>
                         <li><a href="https://docs.couchdb.org/en/stable/"> CouchDB Manual & Documentation</a></li>
                     </ul>
+                    <h3>See "Usage and Reference" Tab for more info.</h3>
                 </div>
             </div>
-            <h2>Connecting to CouchDB</h2>
 
-            <p>By default, raw CouchDB access is via the
-            <script type="text/javascript">document.write(a_href+'/couchdb">/couchdb</a>');</script>
-            sub-directory. I.e.:</p>
-            <pre><script type="text/javascript">document.write(href+'couchdb');</script></pre>
-            <p>If you would rather access CouchDB via the naked domain (i.e. without the '/couchdb' URL
-            suffix) then log into your server via ssh and enable the alternate Nginx config we supply:</p>
-            <pre>
+            <div id="ref">
+                <h2>Connect to CouchDB</h2>
+
+                <p>Connect to CouchDB via the <a id="couchdb" href="">/couchdb</a> sub-directory. I.e.:</p>
+                <pre id="couchdb-eg">https://example.com/couchdb</pre>
+
+                <h2>Customize this page</h2>
+                <p>Customize this page by updating/replacing the /var/www/index.html file. And/or adjust the Nginx
+                config found at /etc/nginx/sites-available/couchdb.</p>
+
+                <h2>Enable CouchDB on web root - disable this page</h2>
+                <p>An alternate 'couchdb-standalone' Nginx config is provided that will allow you to replace this page
+                with direct access to CouchDB (i.e. via the naked domain without the '/couchdb' URL suffix). To enable
+                that, log into your server via ssh and run the following:</p>
+                <pre>
 rm /etc/nginx/sites-enabled/couchdb
 ln -s /etc/nginx/sites-available/couchdb-standalone /etc/nginx/sites-enabled/couchdb-standalone
-systemctl restart nginx
-            </pre>
-            <p><u>Note:</u> This page will no longer be available. To connect to Fauxton, add the '/_utils/' suffix to the domain.</p>
+systemctl restart nginx</pre>
+                <p><u>Remember:</u><br>
+                Fauxton will still be available, but it's URL is relative to CouchDB. So after making this change, you'll find
+                it by adding /_utils to the base URL. I.e.:</p>
+                <pre id="fauxton-alt">https://example.com/_utils</pre>
+                </p>
+            </div>
         </div>
     </body>
 </html>
