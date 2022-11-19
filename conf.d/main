@@ -42,3 +42,6 @@ service couchdb stop
 # configure nginx
 ln -s /etc/nginx/sites-available/couchdb /etc/nginx/sites-enabled/couchdb
 rm /etc/nginx/sites-enabled/tkl-default
+
+# remove redundant images
+rm /var/www/images/{adminer.png,filemanager.png}
