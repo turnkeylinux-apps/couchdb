@@ -9,9 +9,9 @@ Option:
 import sys
 import getopt
 import hashlib
-from uuid import uuid4
-
 import subprocess
+
+from uuid import uuid4
 from libinithooks.dialog_wrapper import Dialog
 
 def usage(s=None):

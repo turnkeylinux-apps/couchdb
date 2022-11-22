@@ -11,17 +11,9 @@ server {
     listen [::]:443 ssl default_server;
     include snippets/ssl.conf;
 
-    root /var/www;
-    index index.html
-
     server_name _;
 
     location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location /couchdb {
-        rewrite /couchdb/(.*) /$1 break;
         proxy_pass http://couchdb/;
         proxy_redirect off;
         proxy_buffering off;

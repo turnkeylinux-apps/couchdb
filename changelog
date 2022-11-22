@@ -1,18 +1,26 @@
 turnkey-couchdb-17.0 (1) turnkey; urgency=low
 
-  * Installed CouchDB v3.2.1 from Apache repos.
+  * Installed CouchDB v3.2.2 from Apache repos.
+    [ Zhenya Hvorostian ]
 
   * Switched to using apache.jfrog.io apt repository.
+    [ Zhenya Hvorostian ]
 
   * Host Control Panel with PM2 instead of couchapp.
+    [ Zhenya Hvorostian ]
 
   * Remain PBKDF2 unchanged since last appliance release.
     The setting is available via Fauxton UI in the config area.
+    [ Zhenya Hvorostian ]
+
+  * Major refactoring and improvements to build code for v17.0, including
+    removing common nodejs components - upstream deb now includes Fauxton).
+    [ with Mattie Darden <mattie@turnkeylinunx.org> ]
 
   * Note: Please refer to turnkey-core's 17.0 changelog for changes common to all
     appliances. Here we only describe changes specific to this appliance.
 
- -- Zhenya Hvorostian <zhenya@turnkeylinux.org>  Sat, 19 Feb 2022 02:28:00 +0300
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Fri, 18 Nov 2022 20:00:35 +0000
 
 turnkey-couchdb-16.1 (1) turnkey; urgency=low
 

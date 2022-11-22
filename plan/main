@@ -1,17 +1,3 @@
 #include <turnkey/base>
 
 nginx
-
-ipython3
-
-build-essential /* this and the rest required to build couchdb from source */
-libicu-dev
-libcurl4-openssl-dev
-libmozjs-78-dev
-erlang-base-hipe
-erlang-dev
-erlang-manpages
-erlang-eunit
-erlang-nox
-erlang-reltool
-sudo
