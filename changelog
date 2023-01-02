@@ -1,3 +1,13 @@
+turnkey-couchdb-17.1 (1) turnkey; urgency=low
+
+  * Updated all Debian packages to latest.
+    [ autopatched by buildtasks ]
+
+  * Patched bugfix release. Closes #1734.
+    [ autopatched by buildtasks ]
+
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Wed, 14 Dec 2022 02:52:16 +0000
+
 turnkey-couchdb-17.0 (1) turnkey; urgency=low
 
   * Installed CouchDB v3.2.2 from Apache repos.
