@@ -5,10 +5,12 @@ upstream couchdb {
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
+    client_max_body_size 20M;
 
     # SSL configuration
     listen 443 ssl default_server;
     listen [::]:443 ssl default_server;
+    client_max_body_size 20M;
     include snippets/ssl.conf;
 
     root /var/www;
