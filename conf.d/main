@@ -22,9 +22,10 @@ EOF
 apt-get update
 apt-get install --assume-yes couchdb
 
-CA_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-printf 'SSL_CERT_FILE=%s\n' "$CA_CERT_FILE" >>/etc/default/couchdb
-export SSL_CERT_FILE=$CA_CERT_FILE
+if [[ -e /usr/local/share/ca-certificates/squid_proxyCA.crt ]]; then
+    rm /usr/local/share/ca-certificates/squid_proxyCA.crt
+    update-ca-certificates --fresh
+fi
 
 # raise iterations and min_iterations from the absurdly low `10`
 # to a bare minimum of `1000`
