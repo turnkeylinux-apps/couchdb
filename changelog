@@ -3,8 +3,8 @@ turnkey-couchdb-19.0 (1) turnkey; urgency=low
   * Install CouchDB 3.5.2.1 from the official Apache CouchDB APT repository
     for Debian Trixie.
 
-  * Use a Deb822 APT source and restrict the upstream repository preference to
-    the CouchDB package.
+  * Use a Deb822 APT source, keep the upstream repository at priority 100, and
+    prefer CouchDB itself at priority 500.
 
   * Update the appliance usage documentation to match the Nginx proxy,
     Fauxton, and CouchDB network configuration.
