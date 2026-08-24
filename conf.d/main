@@ -22,6 +22,10 @@ EOF
 apt-get update
 apt-get install --assume-yes couchdb
 
+CA_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+printf 'SSL_CERT_FILE=%s\n' "$CA_CERT_FILE" >>/etc/default/couchdb
+export SSL_CERT_FILE=$CA_CERT_FILE
+
 # raise iterations and min_iterations from the absurdly low `10`
 # to a bare minimum of `1000`
 CONF=/opt/couchdb/etc/local.ini
@@ -32,8 +36,8 @@ sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 
 service couchdb start
 
-curl --fail --silent --show-error --retry 60 --retry-delay 2 \
-    --retry-max-time 120 --retry-all-errors --connect-timeout 2 \
+curl --fail --silent --show-error --retry 30 --retry-delay 1 \
+    --retry-max-time 30 --retry-all-errors --connect-timeout 2 \
     http://127.0.0.1:5984/ >/dev/null
 
 curl --fail --silent --show-error --user "$ADMIN_NAME:$ADMIN_PASS" \
