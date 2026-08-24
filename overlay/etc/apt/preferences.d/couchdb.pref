@@ -1,3 +1,7 @@
+Package: *
+Pin: origin apache.jfrog.io
+Pin-Priority: 100
+
 Package: couchdb
 Pin: origin apache.jfrog.io
 Pin-Priority: 500

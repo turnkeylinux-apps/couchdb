@@ -55,6 +55,17 @@ apt-get update >/dev/null
 candidate=$(apt-cache policy couchdb | awk '/Candidate:/ {print $2}')
 test -n "$candidate"
 test "$candidate" != '(none)'
+candidate_priority() {
+    apt-cache policy "$1" |
+        awk '$1 == "Candidate:" { candidate=$2; next }
+             candidate != "" && $1 == candidate { print $2; exit }
+             candidate != "" && $1 == "***" && $2 == candidate {
+                 print $3; exit
+             }'
+}
+test "$(candidate_priority couchdb)" = 500
+test "$(candidate_priority couchdb-nouveau)" = 100
+! dpkg-query -W couchdb-nouveau >/dev/null 2>&1
 apt-get indextargets --format '$(SITE)|$(SUITE)|$(COMPONENT)' |
     grep -Fx 'https://apache.jfrog.io/artifactory/couchdb-deb|trixie|main' \
         >/dev/null
@@ -67,7 +78,7 @@ package_source=Official Apache CouchDB APT repository for Debian Trixie
 installed_version=$installed
 runtime_checks=normal init; CouchDB and Nginx active; admin authentication; Admin Party disabled; landing page and Fauxton; database and document create, read, and delete
 updater_command=apt-get update; apt-cache policy couchdb; apt-get indextargets
-updater_result=signed metadata refreshed; installed version unchanged; eligible candidate $candidate
+updater_result=signed metadata refreshed; installed version unchanged; eligible candidate $candidate; couchdb priority 500; uninstalled couchdb-nouveau priority 100
 updater_channel=Apache CouchDB Trixie APT repository
 integrity_evidence=APT accepted signed repository metadata using /usr/share/keyrings/couchdb.gpg
 EOF
