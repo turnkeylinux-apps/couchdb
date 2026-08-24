@@ -1,1 +1,0 @@
-deb [signed-by=/usr/share/keyrings/couchdb.gpg] https://apache.jfrog.io/artifactory/couchdb-deb bookworm main

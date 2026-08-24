@@ -34,8 +34,10 @@ service couchdb start
 
 wait_for_listen 5984 1 # wait 1 secs between each retry
 
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_users
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_replicator
+curl --fail --silent --show-error --user "$ADMIN_NAME:$ADMIN_PASS" \
+    --request PUT http://127.0.0.1:5984/_users
+curl --fail --silent --show-error --user "$ADMIN_NAME:$ADMIN_PASS" \
+    --request PUT http://127.0.0.1:5984/_replicator
 systemctl enable couchdb
 service couchdb stop
 
