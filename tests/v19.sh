@@ -21,8 +21,8 @@ trap cleanup EXIT
 systemctl --quiet is-active couchdb.service nginx.service multi-user.target
 installed=$(dpkg-query -W -f='${Version}' couchdb)
 
-curl --insecure --fail --silent --show-error https://127.0.0.1/ |
-    grep -q 'TurnKey CouchDB'
+curl --insecure --fail --silent --show-error https://127.0.0.1/ >"$response"
+grep -q 'TurnKey CouchDB' "$response"
 curl --insecure --fail --location --silent --show-error \
     "$base/_utils/" >/dev/null
 
@@ -56,7 +56,8 @@ candidate=$(apt-cache policy couchdb | awk '/Candidate:/ {print $2}')
 test -n "$candidate"
 test "$candidate" != '(none)'
 apt-get indextargets --format '$(SITE)|$(SUITE)|$(COMPONENT)' |
-    grep -Fxq 'apache.jfrog.io|trixie|main'
+    grep -Fx 'https://apache.jfrog.io/artifactory/couchdb-deb|trixie|main' \
+        >/dev/null
 test "$(dpkg-query -W -f='${Version}' couchdb)" = "$before"
 grep -Fxq 'Signed-By: /usr/share/keyrings/couchdb.gpg' \
     /etc/apt/sources.list.d/couchdb.sources
