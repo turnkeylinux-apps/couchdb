@@ -10,14 +10,12 @@ web apps directly out of CouchDB.
 This appliance includes all the standard features in `TurnKey Core`_,
 and on top of that:
 
-- CouchDB installed from upstream source.
-- Includes Nginx pre-configured to proxy to CouchDB, with SSL support
-  out of the box.
-- Includes CouchApp, CouchDB Python bindings and iPython.
-- CouchDB listening on all interfaces (convenience)
-- CouchDB `Admin Party`_ disabled and user **admin** enabled by default (security)
-- Includes TurnKey Web Control panel with links to useful references,
-  served by CouchDB, built with CouchApp: /opt/tklwebcp
+- CouchDB installed from the official Apache CouchDB APT repository.
+- Nginx pre-configured with SSL support to expose the CouchDB API at
+  ``/couchdb`` and Fauxton at ``/couchdb/_utils/``.
+- CouchDB bound to loopback and exposed to clients through Nginx.
+- CouchDB `Admin Party`_ disabled and user **admin** enabled by default.
+- TurnKey Web Control panel with links to Fauxton and useful references.
 
 Credentials *(passwords set at first boot)*
 -------------------------------------------

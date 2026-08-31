@@ -22,6 +22,11 @@ EOF
 apt-get update
 apt-get install --assume-yes couchdb
 
+if [[ -e /usr/local/share/ca-certificates/squid_proxyCA.crt ]]; then
+    rm /usr/local/share/ca-certificates/squid_proxyCA.crt
+    update-ca-certificates --fresh
+fi
+
 # raise iterations and min_iterations from the absurdly low `10`
 # to a bare minimum of `1000`
 CONF=/opt/couchdb/etc/local.ini
@@ -32,10 +37,14 @@ sed -i "/^\[couch_httpd_auth\]/ amin_iterations = 1000" $CONF
 
 service couchdb start
 
-wait_for_listen 5984 1 # wait 1 secs between each retry
+curl --fail --silent --show-error --retry 30 --retry-delay 1 \
+    --retry-max-time 30 --retry-all-errors --connect-timeout 2 \
+    http://127.0.0.1:5984/ >/dev/null
 
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_users
-curl -X PUT http://$ADMIN_NAME:$ADMIN_PASS@127.0.0.1:5984/_replicator
+curl --fail --silent --show-error --user "$ADMIN_NAME:$ADMIN_PASS" \
+    --request PUT http://127.0.0.1:5984/_users
+curl --fail --silent --show-error --user "$ADMIN_NAME:$ADMIN_PASS" \
+    --request PUT http://127.0.0.1:5984/_replicator
 systemctl enable couchdb
 service couchdb stop
 
